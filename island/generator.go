@@ -7,9 +7,10 @@ import (
 )
 
 type generator struct {
-	Island *island
-	Hmap   *heightmap
-	Seed   int64
+	Island    *island
+	Block_map map[vector2]block
+	Hmap      *heightmap
+	Seed      int64
 }
 
 func (island *island) Generate() {
@@ -19,17 +20,23 @@ func (island *island) Generate() {
 func (island *island) GenerateIsland(seed int64) {
 	hm := NewHeightMap(island.Radius, seed)
 
-	gen := generator{Island: island, Hmap: hm, Seed: seed}
+	gen := generator{Island: island, Block_map: make(map[vector2]block), Hmap: hm, Seed: seed}
+
+	gen.shape()
 
 	gen.fill()
 }
 
-func (gen *generator) fill() {
+func (gen *generator) shape() {
 	for key, val := range gen.Hmap.Height_map {
 		if gen.isValidPos(key) {
-			gen.Island.SetBlock(block{getBlockIdByHeight(val), position{int(val), key.X, key.Y}})
+			gen.Block_map[key] = block{getBlockIdByHeight(val), position{int(val), key.X, key.Y}}
 		}
 	}
+}
+
+func (gen *generator) fill() {
+
 }
 
 func (gen *generator) isValidPos(pos vector2) bool {
