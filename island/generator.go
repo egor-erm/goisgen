@@ -1,7 +1,7 @@
 package island
 
 import (
-	"fmt"
+	"math"
 	"math/rand"
 	"time"
 )
@@ -26,16 +26,24 @@ func (island *island) GenerateIsland(seed int64) {
 
 func (gen *generator) fill() {
 	for key, val := range gen.Hmap.Height_map {
-		gen.Island.SetBlock(block{getBlockIdByHeight(val), position{int(val), key.X, key.Y}})
-		fmt.Println(key.X, key.Y)
+		if gen.isValidPos(key) {
+			gen.Island.SetBlock(block{getBlockIdByHeight(val), position{int(val), key.X, key.Y}})
+		}
 	}
 }
 
-func GetRandomInt(radius int, seed int64) int {
-	r := rand.New(rand.NewSource(seed))
-	a := -radius
-	b := radius
-	c := a + r.Intn(b-a+1)
+func (gen *generator) isValidPos(pos vector2) bool {
+	random := rand.New(rand.NewSource(gen.Seed))
+	newRad := GetRandomInt(random, gen.Island.Radius-int(math.Round(float64(gen.Island.Radius)*0.5)), gen.Island.Radius)
+	return newRad >= int(diag(pos))
+}
+
+func diag(vec vector2) float64 {
+	return math.Sqrt(math.Pow(float64(vec.X), 2) + math.Pow(float64(vec.Y), 2))
+}
+
+func GetRandomInt(random *rand.Rand, a int, b int) int {
+	c := a + random.Intn(b-a+1)
 	return int(c)
 }
 
