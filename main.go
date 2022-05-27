@@ -2,11 +2,15 @@ package main
 
 import (
 	goimage "github.com/egor-erm/goimager/imager"
+	"github.com/egor-erm/goisgen/island"
 )
 
 func main() {
-	img := goimage.New("island.png", 100, 100)
-	img.FillAllHex("#66FF00")
-	img.DrowHexRect(10, 10, 89, 89, "#00FFD5")
+	img := goimage.NewWithCorners("island.png", -50, -50, 50, 50)
+	isl := island.New(50)
+	isl.Generate(20)
+	for key, val := range isl.Block_list {
+		img.SetHexPixel(key.X, key.Y, island.GetBlockColour(val.Id))
+	}
 	img.Save()
 }

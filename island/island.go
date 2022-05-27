@@ -1,27 +1,23 @@
 package island
 
 type island struct {
-	biome      string
-	block_list [][]block
+	Biome      string
+	Block_list map[vector2]block
+	Radius     int
 }
 
-func New(size int) *island {
-	var px [][]block
+func New(radius int) *island {
+	return &island{Biome: "", Block_list: make(map[vector2]block), Radius: radius}
+}
 
-	for x := 0; x < size; x++ {
-		px = append(px, []block{})
-		for y := 0; y < size; y++ {
-			px[x] = append(px[x], block{})
-		}
-	}
-
-	return &island{biome: "", block_list: px}
+func (island *island) IsEmpty(x, y int) bool {
+	return island.Block_list[vector2{x, y}].Pos.Level == 0
 }
 
 func (island *island) GetSize() int {
-	return len(island.block_list)
+	return island.Radius
 }
 
 func (island *island) SetBlock(bl block) {
-	island.block_list[bl.pos.x][bl.pos.y] = bl
+	island.Block_list[vector2{bl.Pos.X, bl.Pos.Y}] = bl
 }
