@@ -2,10 +2,12 @@ package island
 
 func GetBlockColour(id string) string {
 	switch id {
-	case "0":
+	case "water":
 		return "#6EE7FF"
-	case "1":
+	case "sand":
 		return "#FFFD96"
+	case "grass":
+		return "#BBFF6E"
 	default:
 		return "#41FFF6"
 	}
